@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: iad.ocir.io/idju7iiot7b9/desa_repo/nginx
+  repository: iad.ocir.io/idju7iiot7b9/preprod_desa/nginx-test
   pullPolicy: IfNotPresent
 
 imagePullSecrets: ocir-registry
