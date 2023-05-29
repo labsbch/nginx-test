@@ -1,0 +1,42 @@
+name: Trigger auto deployment for teamsapp
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ master ]
+    paths:
+    - '**'
+    - '.github/workflows/teamsapp-AutoDeployTrigger-c82608de-ab7f-49e3-a3b3-a3d767b719e0.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.TEAMSAPP_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: azeastuscrdevwayoai.azurecr.io
+          registryUsername: ${{ secrets.TEAMSAPP_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.TEAMSAPP_REGISTRY_PASSWORD }}
+          containerAppName: teamsapp
+          resourceGroup: rg-eastus-dev-wayoai
+          imageToBuild: azeastuscrdevwayoai.azurecr.io/teamsapp:${{ github.sha }}
+          
+
+     
+
